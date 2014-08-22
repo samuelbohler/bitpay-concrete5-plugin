@@ -50,14 +50,14 @@ function bpCurl($url, $apiKey, $post = false)
 		'Content-Type: application/json',
 		"Content-Length: $length",
 		"Authorization: Basic $uname",
-		'X-BitPay-Plugin-Info: opencart0.4',
+		'X-BitPay-Plugin-Info: concrete5',
     );
 
 	curl_setopt($curl, CURLOPT_PORT, 443);
 	curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
 	curl_setopt($curl, CURLOPT_TIMEOUT, 10);
 	curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
-	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0); // verify certificate
+	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 1); // verify certificate
 	curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2); // check existence of CN and verify that it matches hostname
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($curl, CURLOPT_FORBID_REUSE, 1);
@@ -135,7 +135,7 @@ function bpCreateInvoice($orderId, $price, $posData, $options = array())
         }
     }
 	$post     = json_encode($post);
-	$response = bpCurl('https://test.bitpay.com/api/invoice/', $options['apiKey'], $post);
+	$response = bpCurl('https://'.($options['testMode'] ? 'test.' : '').'bitpay.com/api/invoice/', $options['apiKey'], $post);
 
 	return $response;
 }
@@ -199,7 +199,7 @@ function bpGetInvoice($invoiceId, $apiKey=false)
 		$apiKey = $bpOptions['apiKey'];		
     }
 
-	$response = bpCurl('https://test.bitpay.com/api/invoice/'.$invoiceId, $apiKey);
+	$response = bpCurl('https://'.($options['testMode'] ? 'test.' : '').'bitpay.com/api/invoice/'.$invoiceId, $apiKey);
 	if (is_string($response))
     {
 		return $response; // error
